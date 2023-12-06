@@ -4630,18 +4630,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "fXoL");
 /* harmony import */ var rrweb__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rrweb */ "TIPy");
 /* harmony import */ var src_app_service_rrweb_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! src/app/service/rrweb.service */ "Tza9");
+/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/router */ "tyNb");
+
 
 
 
 
 class RrWebComponent {
-    constructor(rrwebService) {
+    constructor(rrwebService, elementRef) {
         this.rrwebService = rrwebService;
+        this.elementRef = elementRef;
         this.events = [];
-        this.replayer = null;
     }
     ngOnInit() {
-        this.startRecord();
+        // this.startRecord();
     }
     test1() {
         console.log('test1');
@@ -4653,29 +4655,87 @@ class RrWebComponent {
         console.log('test3');
     }
     startRecord() {
-        console.log(rrweb__WEBPACK_IMPORTED_MODULE_1__["record"], 'rrweb');
+        // this.recorder = rrweb.record({
+        //   emit: function (event) {
+        //     // 将事件发送到服务器或存储在本地
+        //     this.events.push(event);
+        //     console.log(event);
+        //   }.bind(this), // 使用bind确保正确的this上下文
+        //   checkoutEveryNms: 1000, // 每隔1秒生成一个新的事件
+        // });
+        this.recorder = rrweb__WEBPACK_IMPORTED_MODULE_1__["record"]({
+            emit: (event) => {
+                // 将事件发送到服务器或存储在本地
+                // this.events.push(event);
+                this.rrwebService.events.push(event);
+                if (this.rrwebService.events.length > 30) {
+                    // 当事件数量大于 100 时停止录制
+                    this.recorder();
+                }
+                console.log(event);
+            },
+            checkoutEveryNms: 1000,
+        });
+    }
+    palyr() {
+        const targetElement = this.elementRef.nativeElement.querySelector('#rrwebContainer');
+        // 启动重放器
+        this.replayer = new rrweb__WEBPACK_IMPORTED_MODULE_1__["Replayer"](this.events, {
+            root: targetElement,
+            skipInactive: false,
+        });
+        // 重放保存的事件
+        this.replayer.loadEvents( /* 获取保存的事件的方法 */);
+        this.replayer.play();
+        console.log('startRecord', 'rrweb');
+    }
+    stop() {
+        console.log(this.recorder, '111');
+        console.log(rrweb__WEBPACK_IMPORTED_MODULE_1__);
+        // this.recorder.stop();
+    }
+    ngOnDestroy() {
+        // 停止记录器
+        // this.recorder.stop();
     }
 }
-RrWebComponent.ɵfac = function RrWebComponent_Factory(t) { return new (t || RrWebComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](src_app_service_rrweb_service__WEBPACK_IMPORTED_MODULE_2__["RrwebService"])); };
-RrWebComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({ type: RrWebComponent, selectors: [["app-rr-web"]], decls: 9, vars: 0, consts: [[1, "main"], [1, "title", 3, "click"], [1, "center", 3, "click"], [1, "footer", 3, "click"]], template: function RrWebComponent_Template(rf, ctx) { if (rf & 1) {
+RrWebComponent.ɵfac = function RrWebComponent_Factory(t) { return new (t || RrWebComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](src_app_service_rrweb_service__WEBPACK_IMPORTED_MODULE_2__["RrwebService"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__["ElementRef"])); };
+RrWebComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({ type: RrWebComponent, selectors: [["app-rr-web"]], decls: 18, vars: 0, consts: [[1, "main"], ["routerLink", "/rrweb/play"], [2, "display", "flex"], [1, "title", 2, "width", "100px", 3, "click"], [1, "center", 2, "width", "100px", 3, "click"], [1, "footer", 2, "width", "100px", 3, "click"], [3, "click"]], template: function RrWebComponent_Template(rf, ctx) { if (rf & 1) {
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "p");
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](1, "rr-web works!");
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](2, "div", 0);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](3, "div", 1);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function RrWebComponent_Template_div_click_3_listener() { return ctx.test1(); });
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](4, " 1");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](3, "a", 1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](4, "play");
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](5, "div", 2);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function RrWebComponent_Template_div_click_5_listener() { return ctx.test2(); });
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](6, " 2");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](6, "div", 3);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function RrWebComponent_Template_div_click_6_listener() { return ctx.test1(); });
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](7, " 1");
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](7, "div", 3);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function RrWebComponent_Template_div_click_7_listener() { return ctx.test3(); });
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](8, " 3");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](8, "div", 4);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function RrWebComponent_Template_div_click_8_listener() { return ctx.test2(); });
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](9, " 2");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](10, "div", 5);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function RrWebComponent_Template_div_click_10_listener() { return ctx.test3(); });
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](11, " 3");
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
-    } }, styles: [".replayer-wrapper[_ngcontent-%COMP%] {\n  position: fixed;\n  width: 500px;\n  height: 500px;\n  left: 50%;\n  top: 0%;\n  transform: translate(-50%);\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvcnItd2ViL3JyLXdlYi9yci13ZWIuY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSxlQUFBO0VBQ0EsWUFBQTtFQUNBLGFBQUE7RUFDQSxTQUFBO0VBQ0EsT0FBQTtFQUNBLDBCQUFBO0FBQ0oiLCJmaWxlIjoic3JjL2FwcC9yci13ZWIvcnItd2ViL3JyLXdlYi5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIi5yZXBsYXllci13cmFwcGVye1xyXG4gICAgcG9zaXRpb246IGZpeGVkO1xyXG4gICAgd2lkdGg6IDUwMHB4O1xyXG4gICAgaGVpZ2h0OiA1MDBweDtcclxuICAgIGxlZnQ6IDUwJTtcclxuICAgIHRvcDogMCU7XHJcbiAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZSgtNTAlKTtcclxufSJdfQ== */"] });
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](12, "div", 6);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function RrWebComponent_Template_div_click_12_listener() { return ctx.startRecord(); });
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](13, "\u5F55\u5236");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](14, "div", 6);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function RrWebComponent_Template_div_click_14_listener() { return ctx.palyr(); });
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](15, "\u56DE\u653E");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](16, "div", 6);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function RrWebComponent_Template_div_click_16_listener() { return ctx.stop(); });
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](17, "\u505C\u6B62");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+    } }, directives: [_angular_router__WEBPACK_IMPORTED_MODULE_3__["RouterLinkWithHref"]], styles: ["\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJzcmMvYXBwL3JyLXdlYi9yci13ZWIvcnItd2ViLmNvbXBvbmVudC5zY3NzIn0= */"] });
 /*@__PURE__*/ (function () { _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](RrWebComponent, [{
         type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"],
         args: [{
@@ -4683,7 +4743,7 @@ RrWebComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineCom
                 templateUrl: './rr-web.component.html',
                 styleUrls: ['./rr-web.component.scss']
             }]
-    }], function () { return [{ type: src_app_service_rrweb_service__WEBPACK_IMPORTED_MODULE_2__["RrwebService"] }]; }, null); })();
+    }], function () { return [{ type: src_app_service_rrweb_service__WEBPACK_IMPORTED_MODULE_2__["RrwebService"] }, { type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["ElementRef"] }]; }, null); })();
 
 
 /***/ }),
@@ -6256,32 +6316,46 @@ RrWebRoutingModule.ɵinj = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefin
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PlayrrwebComponent", function() { return PlayrrwebComponent; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "fXoL");
-/* harmony import */ var src_app_service_rrweb_service__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! src/app/service/rrweb.service */ "Tza9");
+/* harmony import */ var rrweb__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rrweb */ "TIPy");
+/* harmony import */ var src_app_service_rrweb_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! src/app/service/rrweb.service */ "Tza9");
+
 
 
 
 class PlayrrwebComponent {
-    constructor(rrwebService) {
+    constructor(rrwebService, elementRef) {
         this.rrwebService = rrwebService;
+        this.elementRef = elementRef;
     }
     ngOnInit() {
         console.log(this.rrwebService.events, 'init');
     }
     playrecord() {
-        console.log(this.rrwebService.events, 'playrecord');
+        if (this.rrwebService.events.length < 2) {
+            return;
+        }
+        // console.log(this.rrwebService.events, 'playrecord');
+        // this.replayer.play();
+        const targetElement = this.elementRef.nativeElement.querySelector('#rrwebContainer');
+        // 启动重放器
+        this.replayer = new rrweb__WEBPACK_IMPORTED_MODULE_1__["Replayer"](this.rrwebService.events, {
+            root: targetElement,
+            skipInactive: false,
+        });
+        // 重放保存的事件
+        // this.replayer.loadEvents(/* 获取保存的事件的方法 */);
         this.replayer.play();
+        console.log('startRecord', 'rrweb');
     }
 }
-PlayrrwebComponent.ɵfac = function PlayrrwebComponent_Factory(t) { return new (t || PlayrrwebComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](src_app_service_rrweb_service__WEBPACK_IMPORTED_MODULE_1__["RrwebService"])); };
-PlayrrwebComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({ type: PlayrrwebComponent, selectors: [["app-playrrweb"]], decls: 5, vars: 0, consts: [[1, "footer", 3, "click"]], template: function PlayrrwebComponent_Template(rf, ctx) { if (rf & 1) {
+PlayrrwebComponent.ɵfac = function PlayrrwebComponent_Factory(t) { return new (t || PlayrrwebComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](src_app_service_rrweb_service__WEBPACK_IMPORTED_MODULE_2__["RrwebService"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__["ElementRef"])); };
+PlayrrwebComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({ type: PlayrrwebComponent, selectors: [["app-playrrweb"]], decls: 4, vars: 0, consts: [[3, "click"], ["id", "rrwebContainer"]], template: function PlayrrwebComponent_Template(rf, ctx) { if (rf & 1) {
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "div");
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](1, "p");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](1, "p", 0);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function PlayrrwebComponent_Template_p_click_1_listener() { return ctx.playrecord(); });
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](2, "playrrweb works!");
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](3, "div", 0);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function PlayrrwebComponent_Template_div_click_3_listener() { return ctx.playrecord(); });
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](4, " \u64AD\u653E");
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](3, "div", 1);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
     } }, styles: ["\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJzcmMvYXBwL3JyLXdlYi9wbGF5cnJ3ZWIvcGxheXJyd2ViLmNvbXBvbmVudC5zY3NzIn0= */"] });
 /*@__PURE__*/ (function () { _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](PlayrrwebComponent, [{
@@ -6291,7 +6365,7 @@ PlayrrwebComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefin
                 templateUrl: './playrrweb.component.html',
                 styleUrls: ['./playrrweb.component.scss']
             }]
-    }], function () { return [{ type: src_app_service_rrweb_service__WEBPACK_IMPORTED_MODULE_1__["RrwebService"] }]; }, null); })();
+    }], function () { return [{ type: src_app_service_rrweb_service__WEBPACK_IMPORTED_MODULE_2__["RrwebService"] }, { type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["ElementRef"] }]; }, null); })();
 
 
 /***/ }),

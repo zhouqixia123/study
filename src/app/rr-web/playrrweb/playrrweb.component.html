@@ -1,4 +1,10 @@
-<div>
-    <p>playrrweb works!</p>
-    <div class="footer" (click)="playrecord()"> 播放</div>
+<p>rr-web works!</p>
+<div class="main" id="main">
+    <a routerLink="/rrweb/play">play</a>
+    <div style="display:flex">
+        <div style="width: 100px;" class="title"> 1</div>
+        <div style="width: 100px;" class="center"> 2</div>
+        <div style="width: 100px;" class="footer"> 3</div>
+    </div>
+    <div (click)="playrecord()">播放</div>
 </div>

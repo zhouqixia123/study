@@ -1,6 +1,12 @@
 <p>rr-web works!</p>
 <div class="main">
-    <div class="title" (click)="test1()"> 1</div>
-    <div class="center" (click)="test2()"> 2</div>
-    <div class="footer" (click)="test3()"> 3</div>
+    <a routerLink="/rrweb/play">play</a>
+    <div style="display:flex">
+        <div style="width: 100px;" class="title" (click)="test1()"> 1</div>
+        <div style="width: 100px;" class="center" (click)="test2()"> 2</div>
+        <div style="width: 100px;" class="footer" (click)="test3()"> 3</div>
+    </div>
+    <div (click)="startRecord()">录制</div>
+    <div (click)="palyr()">回放</div>
+    <div (click)="stop()">停止</div>
 </div>
